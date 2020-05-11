@@ -216,4 +216,75 @@ public class GT4500Test {
     verify(mockPrimaryTorpedoStore, times(1)).fire(1);
     verify(mockSecondaryTorpedoStore, times(1)).fire(1);
   }
+
+  @Test
+  public void fireTorpedo_All_Twice_Both_Success(){
+    // Arrange
+    when(mockPrimaryTorpedoStore.isEmpty()).thenReturn(false);
+    when(mockPrimaryTorpedoStore.fire(anyInt())).thenReturn(true);
+
+    when(mockSecondaryTorpedoStore.isEmpty()).thenReturn(false);
+    when(mockSecondaryTorpedoStore.fire(anyInt())).thenReturn(true);
+
+    // Act
+    boolean result1 = ship.fireTorpedo(FiringMode.ALL);
+    boolean result2 = ship.fireTorpedo(FiringMode.ALL);
+
+    // Assert
+    assertEquals(true, result1);
+    assertEquals(true, result2);
+    verify(mockPrimaryTorpedoStore, times(2)).fire(1);
+    verify(mockSecondaryTorpedoStore, times(2)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_All_Twice_One_Empty_Success(){
+    // Arrange
+    when(mockPrimaryTorpedoStore.isEmpty()).thenReturn(true);
+    when(mockPrimaryTorpedoStore.fire(anyInt())).thenReturn(true);
+
+    when(mockSecondaryTorpedoStore.isEmpty()).thenReturn(false);
+    when(mockSecondaryTorpedoStore.fire(anyInt())).thenReturn(true);
+
+    // Act
+    boolean result1 = ship.fireTorpedo(FiringMode.ALL);
+    boolean result2 = ship.fireTorpedo(FiringMode.ALL);
+
+    // Assert
+    assertEquals(true, result1);
+    assertEquals(true, result2);
+    verify(mockPrimaryTorpedoStore, times(0)).fire(1);
+    verify(mockSecondaryTorpedoStore, times(2)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_All_Twice_Other_Empty_Success(){
+    // Arrange
+    when(mockPrimaryTorpedoStore.isEmpty()).thenReturn(false);
+    when(mockPrimaryTorpedoStore.fire(anyInt())).thenReturn(true);
+
+    when(mockSecondaryTorpedoStore.isEmpty()).thenReturn(true);
+    when(mockSecondaryTorpedoStore.fire(anyInt())).thenReturn(true);
+
+    // Act
+    boolean result1 = ship.fireTorpedo(FiringMode.ALL);
+    boolean result2 = ship.fireTorpedo(FiringMode.ALL);
+
+    // Assert
+    assertEquals(true, result1);
+    assertEquals(true, result2);
+    verify(mockPrimaryTorpedoStore, times(2)).fire(1);
+    verify(mockSecondaryTorpedoStore, times(0)).fire(1);
+  }
+
+  @Test
+  public void fireLaser_Fail(){
+    // Arrange
+
+    // Act
+    boolean result = ship.fireLaser(FiringMode.SINGLE);
+
+    // Assert
+    assertEquals(false, result);
+  }
 }
